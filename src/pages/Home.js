@@ -176,7 +176,24 @@ export default function Home({ token, setToken }) {
           ))
         )}
       </div>
-
+{/* 💳 Payment Button */}
+      <div style={{ textAlign: "center", marginTop: 30 }}>
+        <button
+          onClick={handlePayment}
+          style={{
+            backgroundColor: "#4CAF50",
+            color: "white",
+            padding: "10px 20px",
+            borderRadius: "8px",
+            border: "none",
+            fontSize: "16px",
+            cursor: "pointer",
+            boxShadow: "0 4px 8px rgba(0,0,0,0.2)",
+          }}
+        >
+          💎 Upgrade to Premium
+        </button>
+      </div>
       {/* 🔹 Logout (Centered Small Button) */}
       <div style={{ display: "flex", justifyContent: "center", marginTop: "35px" }}>
         <button
