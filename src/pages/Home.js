@@ -6,6 +6,13 @@ export default function Home({ token, setToken }) {
   const [todos, setTodos] = useState([]);
   const [task, setTask] = useState("");
   const [dueDate, setDueDate] = useState("");
+  const [showPayment, setShowPayment] = useState(false);
+  const [cardDetails, setCardDetails] = useState({
+    name: "",
+    cardNumber: "",
+    expiry: "",
+    cvv: "",
+  });
 
   const api = axios.create({
     baseURL: process.env.REACT_APP_API_URL,
@@ -43,6 +50,14 @@ export default function Home({ token, setToken }) {
     localStorage.removeItem("token");
   };
 
+  // 💳 Mock Payment Submit
+  const handlePaymentSubmit = (e) => {
+    e.preventDefault();
+    setShowPayment(false);
+    alert("✅ Payment successful! You are now a Premium User!");
+    setCardDetails({ name: "", cardNumber: "", expiry: "", cvv: "" });
+  };
+
   return (
     <div
       style={{
@@ -56,7 +71,7 @@ export default function Home({ token, setToken }) {
         padding: "40px 20px",
       }}
     >
-      <h1 style={{ marginBottom: "10px", letterSpacing: "1px" }}>Taskify</h1>
+      <h1 style={{ marginBottom: "10px", letterSpacing: "1px" }}>🎓 Taskify</h1>
       <p style={{ opacity: 0.8 }}>Stay organized and manage deadlines efficiently</p>
 
       {/* 🔹 Legend */}
@@ -176,25 +191,121 @@ export default function Home({ token, setToken }) {
           ))
         )}
       </div>
-{/* 💳 Payment Button */}
+
+      {/* 💎 Upgrade to Premium */}
       <div style={{ textAlign: "center", marginTop: 30 }}>
         <button
-          onClick={handlePayment}
+          onClick={() => setShowPayment(true)}
           style={{
-            backgroundColor: "#4CAF50",
-            color: "white",
-            padding: "10px 20px",
+            background: "linear-gradient(90deg, #6C63FF, #8A2BE2)",
+            color: "#fff",
+            padding: "12px 25px",
             borderRadius: "8px",
             border: "none",
             fontSize: "16px",
             cursor: "pointer",
-            boxShadow: "0 4px 8px rgba(0,0,0,0.2)",
+            fontWeight: "600",
+            transition: "0.3s ease",
+            boxShadow: "0 4px 8px rgba(0,0,0,0.3)",
           }}
+          onMouseOver={(e) => (e.target.style.opacity = "0.8")}
+          onMouseOut={(e) => (e.target.style.opacity = "1")}
         >
           💎 Upgrade to Premium
         </button>
       </div>
-      {/* 🔹 Logout (Centered Small Button) */}
+
+      {/* 💳 Mock Payment Modal */}
+      {showPayment && (
+        <div
+          style={{
+            position: "fixed",
+            top: 0,
+            left: 0,
+            width: "100vw",
+            height: "100vh",
+            background: "rgba(0,0,0,0.7)",
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+            zIndex: 1000,
+          }}
+        >
+          <div
+            style={{
+              background: "#fff",
+              color: "#333",
+              padding: "30px",
+              borderRadius: "12px",
+              width: "90%",
+              maxWidth: "400px",
+              boxShadow: "0 4px 15px rgba(0,0,0,0.3)",
+            }}
+          >
+            <h2 style={{ marginBottom: 15, textAlign: "center" }}>
+              💳 Enter Payment Details
+            </h2>
+            <form onSubmit={handlePaymentSubmit}>
+              <input
+                type="text"
+                placeholder="Cardholder Name"
+                required
+                value={cardDetails.name}
+                onChange={(e) =>
+                  setCardDetails({ ...cardDetails, name: e.target.value })
+                }
+                style={inputStyle}
+              />
+              <input
+                type="text"
+                placeholder="Card Number"
+                required
+                value={cardDetails.cardNumber}
+                onChange={(e) =>
+                  setCardDetails({ ...cardDetails, cardNumber: e.target.value })
+                }
+                style={inputStyle}
+              />
+              <div style={{ display: "flex", gap: "10px" }}>
+                <input
+                  type="text"
+                  placeholder="MM/YY"
+                  required
+                  value={cardDetails.expiry}
+                  onChange={(e) =>
+                    setCardDetails({ ...cardDetails, expiry: e.target.value })
+                  }
+                  style={{ ...inputStyle, flex: 1 }}
+                />
+                <input
+                  type="password"
+                  placeholder="CVV"
+                  required
+                  value={cardDetails.cvv}
+                  onChange={(e) =>
+                    setCardDetails({ ...cardDetails, cvv: e.target.value })
+                  }
+                  style={{ ...inputStyle, flex: 1 }}
+                />
+              </div>
+              <div style={{ textAlign: "center", marginTop: 20 }}>
+                <button type="submit" style={submitBtn}>
+                  Submit Payment
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setShowPayment(false)}
+                  style={cancelBtn}
+                >
+                  Cancel
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
+
+      {/* 🔹 Logout */}
       <div style={{ display: "flex", justifyContent: "center", marginTop: "35px" }}>
         <button
           onClick={logout}
@@ -214,9 +325,39 @@ export default function Home({ token, setToken }) {
           onMouseOver={(e) => (e.target.style.transform = "scale(1.08)")}
           onMouseOut={(e) => (e.target.style.transform = "scale(1)")}
         >
-           Logout
+          Logout
         </button>
       </div>
     </div>
   );
 }
+
+const inputStyle = {
+  width: "100%",
+  marginBottom: "10px",
+  padding: "10px",
+  borderRadius: "6px",
+  border: "1px solid #ccc",
+  outline: "none",
+};
+
+const submitBtn = {
+  background: "#6C63FF",
+  color: "#fff",
+  border: "none",
+  padding: "10px 20px",
+  borderRadius: "6px",
+  cursor: "pointer",
+  fontWeight: "600",
+  marginRight: "10px",
+};
+
+const cancelBtn = {
+  background: "#ddd",
+  color: "#333",
+  border: "none",
+  padding: "10px 20px",
+  borderRadius: "6px",
+  cursor: "pointer",
+  fontWeight: "600",
+};
